@@ -14,7 +14,11 @@ public class PersonQueue {
         _queue.Insert(0, person);
     }
 
+    // Switched code to offer a cleaner exception value for when the queue is empty
     public Person Dequeue() {
+        if (IsEmpty()) {
+            throw new InvalidOperationException("The queue is empty.");
+        }
         var person = _queue[0];
         _queue.RemoveAt(0);
         return person;
