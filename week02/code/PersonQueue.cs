@@ -11,7 +11,7 @@ public class PersonQueue {
     /// </summary>
     /// <param name="person">The person to add</param>
     public void Enqueue(Person person) {
-        _queue.Insert(0, person);
+        _queue.Add(person);
     }
 
     // Switched code to offer a cleaner exception value for when the queue is empty
