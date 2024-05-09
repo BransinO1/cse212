@@ -26,3 +26,6 @@
         return true;
     }
 }
+
+// #1 - Create a set instead of looping through the list. Compare the length of the text and the set
+//      If duplicates are found - return false - otherwise return true
