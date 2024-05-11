@@ -111,6 +111,21 @@ public static class SetsAndMapsTester {
         // To display the pair correctly use something like:
         // Console.WriteLine($"{word} & {pair}");
         // Each pair of words should displayed on its own line.
+        HashSet<string> set = new HashSet<string>();
+
+        foreach (string word in words) {
+            string reverse = ReverseString(word);
+            if (set.Contains(reverse) && word != reverse) {
+                Console.WriteLine($"{word} & {reverse}");
+            }
+            set.Add(word);
+        }
+    }
+
+    public static string ReverseString(string input) {
+        char[] charArray = input.ToCharArray();
+        Array.Reverse(charArray);
+        return new string(charArray);
     }
 
     /// <summary>
@@ -132,6 +147,17 @@ public static class SetsAndMapsTester {
         foreach (var line in File.ReadLines(filename)) {
             var fields = line.Split(",");
             // Todo Problem 2 - ADD YOUR CODE HERE
+            if (fields.Length >= 4) {
+                string degree = fields[3].Trim();
+                if (!string.IsNullOrWhiteSpace(degree)) {
+                    if (degrees.ContainsKey(degree)) {
+                        degrees[degree]++;
+                    }
+                    else {
+                        degrees[degree] = 1;
+                    }
+                }
+            }
         }
 
         return degrees;
@@ -158,7 +184,52 @@ public static class SetsAndMapsTester {
     /// #############
     private static bool IsAnagram(string word1, string word2) {
         // Todo Problem 3 - ADD YOUR CODE HERE
-        return false;
+        word1 = CleanString(word1);
+        word2 = CleanString(word2);
+
+        if(word1.Length != word2.Length) {
+            return false;
+        }
+
+    Dictionary<char, int> charCount1 = CountCharacters(word1);
+    Dictionary<char, int> charCount2 = CountCharacters(word2);
+
+    foreach (var kvp in charCount1)
+    {
+        char c = kvp.Key;
+        int count1 = kvp.Value;
+        int count2;
+
+        if (!charCount2.TryGetValue(c, out count2) || count1 != count2)
+        {
+            return false;
+        }
+    }
+
+        return true;
+    }
+
+    private static string CleanString(string input)
+    {
+        return new string(input.ToLower().Where(char.IsLetter).ToArray());
+    }
+
+    private static Dictionary<char, int> CountCharacters(string input)
+    {
+        Dictionary<char, int> charCount = new Dictionary<char, int>();
+
+        foreach (char c in input)
+        {
+            if (charCount.ContainsKey(c))
+            {
+                charCount[c]++;
+            }
+            else
+            {
+                charCount[c] = 1;
+            }
+        }
+        return charCount;
     }
 
     /// <summary>
@@ -220,20 +291,35 @@ public static class SetsAndMapsTester {
     /// https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
     /// 
     /// </summary>
-    private static void EarthquakeDailySummary() {
+    private static void EarthquakeDailySummary()
+    {
         const string uri = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
         using var client = new HttpClient();
         using var getRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
-        using var jsonStream = client.Send(getRequestMessage).Content.ReadAsStream();
+        
+        using var response = client.Send(getRequestMessage);
+        response.EnsureSuccessStatusCode(); // Ensure the request was successful
+        
+        using var jsonStream = response.Content.ReadAsStream();
         using var reader = new StreamReader(jsonStream);
         var json = reader.ReadToEnd();
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
         var featureCollection = JsonSerializer.Deserialize<FeatureCollection>(json, options);
 
+        PrintEarthquakeDetails(featureCollection);
+    }
+
         // TODO:
         // 1. Add code in FeatureCollection.cs to describe the JSON using classes and properties 
         // on those classes so that the call to Deserialize above works properly.
         // 2. Add code below to print out each place a earthquake has happened today and its magitude.
+    private static void PrintEarthquakeDetails(FeatureCollection featureCollection)
+    {
+        // Print out each earthquake location and magnitude
+        foreach (var feature in featureCollection.Features)
+        {
+            Console.WriteLine($"Location: {feature.Properties.Place}, Magnitude: {feature.Properties.Mag}");
+        }
     }
 }

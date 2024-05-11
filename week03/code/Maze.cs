@@ -29,7 +29,12 @@ public class Maze {
     /// can't move, then display "Can't go that way!"
     /// </summary>
     public void MoveLeft() {
-        // FILL IN CODE
+        if (_currX > 1 && _mazeMap.TryGetValue((_currX - 1, _currY), out bool[] moves) && moves[1]) {
+            _currX--;
+            ShowStatus();
+        } else {
+            Console.WriteLine("Can't go left!");
+        }
     }
 
     /// <summary>
@@ -37,15 +42,26 @@ public class Maze {
     /// can't move, then display "Can't go that way!"
     /// </summary>
     public void MoveRight() {
-        // FILL IN CODE
+        if (_currX < 6 && _mazeMap.TryGetValue((_currX + 1, _currY), out bool[] moves) && moves[0]) {
+            _currX++;
+            ShowStatus();
+        } else {
+            Console.WriteLine("Can't go right!");
+        }
     }
+    
 
     /// <summary>
     /// Check to see if you can move up.  If you can, then move.  If you
     /// can't move, then display "Can't go that way!"
     /// </summary>
     public void MoveUp() {
-        // FILL IN CODE
+        if (_currY > 1 && _mazeMap.TryGetValue((_currX, _currY - 1), out bool[] moves) && moves[3]) {
+            _currY--;
+            ShowStatus();
+        } else {
+            Console.WriteLine("Can't go up!");
+        }
     }
 
     /// <summary>
@@ -53,7 +69,12 @@ public class Maze {
     /// can't move, then display "Can't go that way!"
     /// </summary>
     public void MoveDown() {
-        // FILL IN CODE
+        if (_currY < 6 && _mazeMap.TryGetValue((_currX, _currY + 1), out bool[] moves) && moves[2]) {
+            _currY++;
+            ShowStatus();
+        } else {
+            Console.WriteLine("Can't go down!");
+        }
     }
 
     public void ShowStatus() {
