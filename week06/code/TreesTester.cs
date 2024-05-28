@@ -96,7 +96,16 @@ public static class TreesTester {
     /// <param name="first">the first index in the sortedNumbers to insert</param>
     /// <param name="last">the last index in the sortedNumbers to insert</param>
     /// <param name="bst">the BinarySearchTree in which to insert the values</param>
-    private static void InsertMiddle(int[] sortedNumbers, int first, int last, BinarySearchTree bst) {
-        // TODO Start Problem 5
+    private static void InsertMiddle(int[] sortedNumbers, int first, int last, BinarySearchTree bst) {            //Problem 5 Implementation
+            if (first <= last) {
+                int middle = (first + last) / 2; // Calculate the middle index
+
+                // Insert the middle value into the binary search tree
+                bst.Insert(sortedNumbers[middle]);
+
+                // Recursively insert the middle values of the left and right sublists
+                InsertMiddle(sortedNumbers, first, middle - 1, bst); // Left sublist
+                InsertMiddle(sortedNumbers, middle + 1, last, bst);  // Right sublist
+        }
     }
 }
